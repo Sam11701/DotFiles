@@ -1,0 +1,47 @@
+{
+    "layer": "top",
+    "position": "top",
+    "height": 32,
+    "spacing": 4,
+
+    "modules-left": ["hyprland/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["tray", "pulseaudio", "network", "cpu", "memory"],
+
+    "hyprland/workspaces": {
+        "format": "{id}"
+    },
+
+    "clock": {
+        "format": "{:%a %d %b  %H:%M}",
+        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>"
+    },
+
+    "tray": {
+        "icon-size": 16,
+        "spacing": 8
+    },
+
+    "pulseaudio": {
+        "format": "Vol {volume}%",
+        "format-muted": "Muted",
+        "on-click": "hyprpwcenter"
+    },
+
+    "network": {
+        "format-wifi": "Wi-Fi {essid} ({signalStrength}%)",
+        "format-ethernet": "Net {ifname}",
+        "format-disconnected": "Disconnected",
+        "tooltip-format": "{ifname}: {ipaddr}/{cidr}"
+    },
+
+    "cpu": {
+        "format": "CPU {usage}%",
+        "interval": 5
+    },
+
+    "memory": {
+        "format": "Mem {percentage}%",
+        "interval": 5
+    }
+}
