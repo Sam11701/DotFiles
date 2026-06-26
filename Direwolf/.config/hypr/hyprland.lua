@@ -25,14 +25,14 @@ hl.monitor({
     output   = "DP-2",
     mode     = "1920x1080@165",
     position = "0x0",
-    scale    = "auto",
+    scale    = 0.75,
 })
 
 hl.monitor({
     output   = "DP-3",
     mode     = "2560x1440@165",
-    position = "1920x0",
-    scale    = "auto",
+    position = "2560x0",
+    scale    = 1.0,
 })
 
 hl.monitor({
@@ -89,7 +89,11 @@ local colors = require("colors")
 -- restarted on crash and behaves like the other --user services below.
 hl.on("hyprland.start", function ()
   hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE; dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE; systemctl --user start hypridle.service hyprpolkitagent.service cliphist.service quickshell.service cursor-clip.service")
-  hl.exec_cmd("awww-daemon & sleep 0.5 && waypaper --restore")
+  hl.exec_cmd("hyprctl plugin load " .. os.getenv("HOME") .. "/.local/lib/liquidglass.so")
+  hl.exec_cmd("awww-daemon & until awww query 2>/dev/null; do sleep 0.1; done && awww restore")
+  hl.exec_cmd("kitty --hold -e fastfetch", { workspace = "2 silent" })
+  hl.exec_cmd("sh -c 'sleep 0.3; exec kitty -e cmatrix -C red'", { workspace = "2 silent" })
+  hl.exec_cmd("sh -c 'sleep 0.6; exec kitty -e peaclock'", { workspace = "2 silent" })
 end)
 
 
@@ -164,10 +168,13 @@ hl.config({
         },
 
         blur = {
-            enabled   = true,
-            size      = 3,
-            passes    = 1,
-            vibrancy  = 0.1696,
+            enabled           = true,
+            size              = 10,
+            passes            = 4,
+            vibrancy          = 0.5,
+            vibrancy_darkness = 0.5,
+            new_optimizations = true,
+            noise             = 0.02,
         },
     },
 
@@ -251,6 +258,7 @@ hl.config({
     misc = {
         force_default_wallpaper = -1,    -- Set to 0 or 1 to disable the anime mascot wallpapers
         disable_hyprland_logo   = false, -- If true disables the random hyprland logo / anime girl background. :(
+        vrr                     = 1,
     },
 })
 
@@ -267,7 +275,9 @@ hl.config({
         kb_options = "",
         kb_rules   = "",
 
-        follow_mouse = 1,
+        follow_mouse  = 1,
+        repeat_rate   = 35,
+        repeat_delay  = 300,
 
         sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
 
@@ -313,6 +323,7 @@ hl.bind("ALT + CTRL + SHIFT + V", hl.dsp.exec_cmd("cursor-clip"))
 hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle only
+hl.bind(mainMod .. " + F", hl.dsp.window.fullscreen())
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -429,4 +440,43 @@ hl.window_rule({
 
     float = true,
     size  = "640 360",
+})
+
+-- Prevent screen lock while watching video or browsing
+hl.window_rule({
+    name        = "idle-inhibit-media",
+    match       = { class = "(mpv|vlc|firefox)" },
+    idle_inhibit = "focus",
+})
+
+-- Blur rofi launcher
+hl.layer_rule({ match = { namespace = "rofi" },        blur = true, ignore_alpha = 0.5 })
+-- Blur quickshell calendar popup
+hl.layer_rule({ match = { namespace = "qs-calendar" }, blur = true, ignore_alpha = 0.1 })
+
+-- Liquid glass plugin
+hl.config({
+    plugin = {
+        liquidglass = {
+            enabled              = 1,
+            layer_namespaces     = "quickshell,qs-calendar",
+            window_opacity       = 0.90,
+            layer_opacity        = 1.0,
+            layer_corner_radius  = 12,
+            glass_opacity        = 0.78,
+            blur_strength        = 0.32,
+            blur_iterations      = 2,
+            refraction_strength  = 1.15,
+            chromatic_aberration = 0.90,
+            lens_distortion      = 1.15,
+            fresnel_strength     = 0.46,
+            specular_strength    = 0.38,
+            edge_thickness       = 0.040,
+            tint_color           = 0xb8d8ff00,
+            brightness           = 0.88,
+            contrast             = 1.16,
+            saturation           = 1.14,
+            vibrancy             = 0.32,
+        }
+    }
 })
