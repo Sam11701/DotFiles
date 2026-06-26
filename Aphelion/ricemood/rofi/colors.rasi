@@ -1,0 +1,7 @@
+* {
+    background:     ^r@DM^ee;
+    foreground:     ^r@LM^;
+    foreground-alt: ^r@M^;
+    surface:        ^r@DM>li(0.15)^;
+    primary:        ^r@V^;
+}

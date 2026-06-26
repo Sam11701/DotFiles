@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
-PROFILES=("Default" "Direwolf")
+PROFILES=("Default" "Direwolf" "Aphelion")
 
 usage() {
     echo "Usage: switch-rice <profile>"
