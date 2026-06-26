@@ -2,7 +2,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROFILES=("Default" "Direwolf")
+PROFILES=("Default")
 
 usage() {
     echo "Usage: switch-rice <profile>"
@@ -21,7 +21,6 @@ PROFILE_DIR="$DOTFILES_DIR/$PROFILE"
 
 echo "Switching to $PROFILE..."
 
-# Back up current active configs that would be overwritten
 backup_if_needed() {
     local src="$1" dst="$2"
     if [[ -e "$dst" && ! -L "$dst" ]]; then
@@ -29,7 +28,6 @@ backup_if_needed() {
     fi
 }
 
-# Copy all .config/* entries from the profile
 if [[ -d "$PROFILE_DIR/.config" ]]; then
     for entry in "$PROFILE_DIR/.config"/*/; do
         name="$(basename "$entry")"
@@ -41,7 +39,6 @@ if [[ -d "$PROFILE_DIR/.config" ]]; then
     done
 fi
 
-# Copy dotfiles from profile root (e.g. .Xresources)
 for f in "$PROFILE_DIR"/.*; do
     name="$(basename "$f")"
     [[ "$name" == "." || "$name" == ".." || "$name" == ".config" ]] && continue
@@ -54,14 +51,4 @@ done
 echo "$PROFILE" > "$DOTFILES_DIR/.active-rice"
 echo ""
 echo "Done. Active rice: $PROFILE"
-
-case "$PROFILE" in
-    Default)
-        echo "Log out and start a Hyprland session to apply."
-        ;;
-    Direwolf)
-        echo "Log out and start an i3 session to apply."
-        echo "Make sure i3, polybar, dmenu, and ranger are installed:"
-        echo "  sudo pacman -S i3-wm polybar dmenu ranger"
-        ;;
-esac
+echo "Log out and start a Hyprland session to apply."
