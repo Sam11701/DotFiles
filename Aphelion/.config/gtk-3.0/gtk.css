@@ -1,0 +1,171 @@
+/* Aphelion GTK3 theme — overrides Adwaita dark with the rice palette */
+
+@define-color theme_bg_color #101319;
+@define-color theme_fg_color #f4f3ee;
+@define-color theme_base_color #171b24;
+@define-color theme_text_color #f4f3ee;
+@define-color theme_selected_bg_color #E34F4F;
+@define-color theme_selected_fg_color #f4f3ee;
+@define-color insensitive_bg_color #151a24;
+@define-color insensitive_fg_color #3A435A;
+@define-color insensitive_base_color #101319;
+@define-color theme_tooltip_bg_color #171b24;
+@define-color theme_tooltip_fg_color #f4f3ee;
+@define-color borders #3A435A;
+@define-color unfocused_borders #252d3d;
+@define-color warning_color #e37e4f;
+@define-color error_color #E34F4F;
+@define-color success_color #69bfce;
+@define-color link_color #5679E3;
+@define-color visited_color #956dca;
+
+/* ── Window ─────────────────────────────────────────────────────────── */
+window.background, .background {
+    background-color: #101319;
+    color: #f4f3ee;
+}
+
+/* ── Sidebar (Places panel) ─────────────────────────────────────────── */
+.sidebar, .sidebar-background {
+    background-color: #171b24;
+    color: #f4f3ee;
+    border-right: 1px solid #3A435A;
+}
+.sidebar row, .sidebar row label { color: #f4f3ee; }
+.sidebar row:hover { background-color: #1e2535; }
+.sidebar row:selected,
+.sidebar row:selected label { background-color: #E34F4F; color: #f4f3ee; }
+
+/* ── Header bar ─────────────────────────────────────────────────────── */
+headerbar, .titlebar {
+    background-color: #101319;
+    background-image: none;
+    color: #f4f3ee;
+    border-bottom: 1px solid #3A435A;
+    box-shadow: none;
+}
+headerbar .title, headerbar .subtitle { color: #f4f3ee; }
+headerbar button {
+    background-color: transparent;
+    background-image: none;
+    color: #f4f3ee;
+    border-color: transparent;
+    box-shadow: none;
+}
+headerbar button:hover { background-color: #171b24; border-color: #3A435A; }
+headerbar button:active,
+headerbar button:checked { background-color: #E34F4F; color: #f4f3ee; }
+
+/* ── File/icon view ─────────────────────────────────────────────────── */
+.view, .content-view, iconview, treeview {
+    background-color: #101319;
+    color: #f4f3ee;
+}
+.view:selected, .view:selected:focus,
+iconview:selected, iconview:selected:focus,
+row:selected, row:selected:focus {
+    background-color: #E34F4F;
+    color: #f4f3ee;
+}
+.view .label, treeview .label { color: #f4f3ee; }
+.view:selected .label, row:selected .label { color: #f4f3ee; }
+
+treeview header button {
+    background-color: #171b24;
+    color: #f4f3ee;
+    border-color: #3A435A;
+}
+treeview header button:hover { background-color: #1e2535; }
+
+/* ── Path / breadcrumb bar ──────────────────────────────────────────── */
+.path-bar button {
+    background-color: #171b24;
+    background-image: none;
+    color: #f4f3ee;
+    border-color: #3A435A;
+}
+.path-bar button:hover { background-color: #1e2535; }
+.path-bar button:checked { background-color: #E34F4F; color: #f4f3ee; }
+
+/* ── Buttons ────────────────────────────────────────────────────────── */
+button {
+    background-image: none;
+    background-color: #171b24;
+    color: #f4f3ee;
+    border-color: #3A435A;
+    box-shadow: none;
+}
+button:hover { background-color: #1e2535; border-color: #5679E3; }
+button:active, button:checked { background-color: #E34F4F; color: #f4f3ee; }
+button:disabled { background-color: #151a24; color: #3A435A; }
+
+/* ── Entry (search, path entry) ─────────────────────────────────────── */
+entry {
+    background-color: #171b24;
+    color: #f4f3ee;
+    border-color: #3A435A;
+    caret-color: #f4f3ee;
+}
+entry:focus { border-color: #E34F4F; box-shadow: 0 0 0 2px rgba(227,79,79,0.2); }
+entry selection { background-color: #E34F4F; color: #f4f3ee; }
+
+/* ── Context menu ───────────────────────────────────────────────────── */
+menu, .menu {
+    background-color: #171b24;
+    color: #f4f3ee;
+    border: 1px solid #3A435A;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+menuitem { color: #f4f3ee; }
+menuitem:hover, menuitem:selected { background-color: #E34F4F; color: #f4f3ee; }
+menuitem:disabled, menuitem label:disabled { color: #3A435A; }
+menu separator, .menu separator {
+    background-color: #3A435A;
+    min-height: 1px;
+    margin: 2px 0;
+}
+
+/* ── Popover ────────────────────────────────────────────────────────── */
+popover {
+    background-color: #171b24;
+    border: 1px solid #3A435A;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+popover list, popover listview { background-color: #171b24; color: #f4f3ee; }
+popover row:hover, popover modelbutton:hover { background-color: #E34F4F; color: #f4f3ee; }
+
+/* ── Scrollbar ──────────────────────────────────────────────────────── */
+scrolledwindow junction { background-color: #101319; }
+scrollbar { background-color: #101319; }
+scrollbar trough { background-color: #101319; }
+scrollbar slider {
+    background-color: #3A435A;
+    min-width: 6px; min-height: 6px;
+    border-radius: 4px; margin: 2px;
+}
+scrollbar slider:hover { background-color: #5679E3; }
+scrollbar slider:active { background-color: #E34F4F; }
+
+/* ── Tooltip ────────────────────────────────────────────────────────── */
+tooltip { background-color: #171b24; border: 1px solid #3A435A; }
+tooltip * { background-color: transparent; color: #f4f3ee; }
+
+/* ── Misc widgets ───────────────────────────────────────────────────── */
+separator { background-color: #3A435A; min-width: 1px; min-height: 1px; }
+
+check, radio { background-color: #171b24; border-color: #3A435A; }
+check:checked, radio:checked { background-color: #E34F4F; border-color: #E34F4F; color: #f4f3ee; }
+
+progressbar trough { background-color: #3A435A; border-radius: 4px; }
+progressbar progress { background-color: #E34F4F; border-radius: 4px; }
+
+switch { background-color: #3A435A; }
+switch:checked { background-color: #E34F4F; }
+switch slider { background-color: #f4f3ee; }
+
+notebook { background-color: #101319; }
+notebook header { background-color: #101319; border-color: #3A435A; }
+notebook header tab { background-color: #171b24; color: #3A435A; }
+notebook header tab:checked { background-color: #101319; color: #f4f3ee; border-bottom: 2px solid #E34F4F; }
+
+overshoot, undershoot { background-color: transparent; }

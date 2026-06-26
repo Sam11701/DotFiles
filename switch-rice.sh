@@ -55,6 +55,7 @@ echo "Reloading running services..."
 hyprctl reload 2>/dev/null && echo "  hyprland reloaded" || echo "  hyprland not running"
 systemctl --user restart quickshell.service 2>/dev/null && echo "  quickshell restarted" || echo "  quickshell not running"
 pkill -SIGUSR1 kitty 2>/dev/null && echo "  kitty reloaded" || echo "  kitty not running"
+nemo --quit 2>/dev/null && echo "  nemo closed (reopen to apply GTK theme)" || true
 
 echo ""
 echo "Done. Active rice: $PROFILE"

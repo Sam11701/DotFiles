@@ -1,0 +1,89 @@
+/* Default GTK3 theme — initial state; replaced by matugen on wallpaper change */
+
+@define-color theme_bg_color #0f1417;
+@define-color theme_fg_color #dfe3e7;
+@define-color theme_base_color #41484d;
+@define-color theme_text_color #dfe3e7;
+@define-color theme_selected_bg_color #90cef4;
+@define-color theme_selected_fg_color #00344a;
+@define-color insensitive_bg_color #141a1e;
+@define-color insensitive_fg_color #8b9297;
+@define-color insensitive_base_color #0f1417;
+@define-color theme_tooltip_bg_color #41484d;
+@define-color theme_tooltip_fg_color #dfe3e7;
+@define-color borders #8b9297;
+@define-color unfocused_borders #4a5258;
+@define-color warning_color #cbc1e9;
+@define-color error_color #ffb4ab;
+@define-color success_color #b6c9d7;
+@define-color link_color #90cef4;
+
+window.background, .background { background-color: #0f1417; color: #dfe3e7; }
+
+.sidebar, .sidebar-background {
+    background-color: #41484d; color: #dfe3e7; border-right: 1px solid #8b9297;
+}
+.sidebar row label { color: #dfe3e7; }
+.sidebar row:selected, .sidebar row:selected label { background-color: #90cef4; color: #00344a; }
+
+headerbar, .titlebar {
+    background-color: #0f1417; background-image: none;
+    color: #dfe3e7; border-bottom: 1px solid #8b9297; box-shadow: none;
+}
+headerbar .title { color: #dfe3e7; }
+headerbar button {
+    background-color: transparent; background-image: none;
+    color: #dfe3e7; border-color: transparent; box-shadow: none;
+}
+headerbar button:hover { background-color: #41484d; }
+headerbar button:active, headerbar button:checked { background-color: #90cef4; color: #00344a; }
+
+.view, .content-view, iconview, treeview { background-color: #0f1417; color: #dfe3e7; }
+.view:selected, .view:selected:focus,
+iconview:selected, iconview:selected:focus,
+row:selected, row:selected:focus { background-color: #90cef4; color: #00344a; }
+
+.path-bar button { background-color: #41484d; background-image: none; color: #dfe3e7; border-color: #8b9297; }
+.path-bar button:checked { background-color: #90cef4; color: #00344a; }
+
+button { background-image: none; background-color: #41484d; color: #dfe3e7; border-color: #8b9297; box-shadow: none; }
+button:hover { background-color: #4a5258; border-color: #90cef4; }
+button:active, button:checked { background-color: #90cef4; color: #00344a; }
+button:disabled { background-color: #141a1e; color: #8b9297; }
+
+entry { background-color: #41484d; color: #dfe3e7; border-color: #8b9297; caret-color: #dfe3e7; }
+entry:focus { border-color: #90cef4; }
+entry selection { background-color: #90cef4; color: #00344a; }
+
+menu, .menu { background-color: #41484d; color: #dfe3e7; border: 1px solid #8b9297; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+menuitem { color: #dfe3e7; }
+menuitem:hover, menuitem:selected { background-color: #90cef4; color: #00344a; }
+menuitem:disabled { color: #8b9297; }
+menu separator { background-color: #8b9297; min-height: 1px; margin: 2px 0; }
+
+popover { background-color: #41484d; border: 1px solid #8b9297; box-shadow: 0 6px 20px rgba(0,0,0,0.5); }
+popover list { background-color: #41484d; color: #dfe3e7; }
+popover row:hover, popover modelbutton:hover { background-color: #90cef4; color: #00344a; }
+
+scrolledwindow junction { background-color: #0f1417; }
+scrollbar { background-color: #0f1417; }
+scrollbar trough { background-color: #0f1417; }
+scrollbar slider { background-color: #8b9297; min-width: 6px; min-height: 6px; border-radius: 4px; margin: 2px; }
+scrollbar slider:hover { background-color: #90cef4; }
+
+tooltip { background-color: #41484d; border: 1px solid #8b9297; }
+tooltip * { background-color: transparent; color: #dfe3e7; }
+
+separator { background-color: #8b9297; min-width: 1px; min-height: 1px; }
+check, radio { background-color: #41484d; border-color: #8b9297; }
+check:checked, radio:checked { background-color: #90cef4; border-color: #90cef4; }
+progressbar trough { background-color: #8b9297; border-radius: 4px; }
+progressbar progress { background-color: #90cef4; border-radius: 4px; }
+switch { background-color: #8b9297; }
+switch:checked { background-color: #90cef4; }
+switch slider { background-color: #00344a; }
+notebook { background-color: #0f1417; }
+notebook header { background-color: #0f1417; border-color: #8b9297; }
+notebook header tab { background-color: #41484d; color: #8b9297; }
+notebook header tab:checked { background-color: #0f1417; color: #dfe3e7; border-bottom: 2px solid #90cef4; }
+overshoot, undershoot { background-color: transparent; }
