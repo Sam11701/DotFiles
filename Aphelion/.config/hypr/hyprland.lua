@@ -459,7 +459,7 @@ hl.config({
     plugin = {
         liquidglass = {
             enabled              = 1,
-            exclude_classes      = "brave-browser",
+            exclude_classes      = "brave-browser,kitty",
             layer_namespaces     = "quickshell,qs-calendar",
             window_opacity       = 0.90,
             layer_opacity        = 1.0,

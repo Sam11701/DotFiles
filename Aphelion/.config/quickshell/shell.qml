@@ -10,7 +10,8 @@ import Quickshell.Services.Pipewire
 Scope {
     id: rootScope
 
-    property bool calendarOpen: false
+    property bool sidebarOpen: false
+    property int  sidebarPage: 0
 
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
@@ -33,7 +34,7 @@ Scope {
         command: ["hyprpwcenter"]
     }
 
-    // Bar — one per screen
+    // ── Bar (one per screen) ────────────────────────────────────────────────
     Variants {
         model: Quickshell.screens
 
@@ -41,23 +42,40 @@ Scope {
             id: panel
             required property var modelData
             screen: modelData
-            readonly property var hyprMonitor: Hyprland.monitorFor(modelData)
+            readonly property var  hyprMonitor: Hyprland.monitorFor(modelData)
             readonly property real uiScale: modelData.width / 1920
 
-            anchors {
-                top: true
-                left: true
-                right: true
-            }
+            anchors { top: true; left: true; right: true }
             implicitHeight: 22 * uiScale
             color: Colors.background
 
-            // Left: workspaces
+            // Left: sidebar toggle + workspaces
             Row {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.leftMargin: 10 * panel.uiScale
+                anchors.leftMargin: 8 * panel.uiScale
                 spacing: 10 * panel.uiScale
+
+                Text {
+                    text: "≡"
+                    color: rootScope.sidebarOpen && rootScope.sidebarPage === 0
+                           ? Colors.foreground : Colors.surfaceForeground
+                    font.pixelSize: 14 * panel.uiScale
+                    font.family: "Overpass Mono"
+                    anchors.verticalCenter: parent.verticalCenter
+                    MouseArea {
+                        anchors.fill: parent
+                        cursorShape: Qt.PointingHandCursor
+                        onClicked: {
+                            if (rootScope.sidebarOpen && rootScope.sidebarPage === 0)
+                                rootScope.sidebarOpen = false
+                            else {
+                                rootScope.sidebarPage = 0
+                                rootScope.sidebarOpen = true
+                            }
+                        }
+                    }
+                }
 
                 Repeater {
                     model: Hyprland.workspaces
@@ -79,7 +97,7 @@ Scope {
                 }
             }
 
-            // Center: date (clickable to open calendar)
+            // Center: date — click opens sidebar calendar page
             Text {
                 anchors.centerIn: parent
                 color: Colors.surfaceForeground
@@ -90,11 +108,18 @@ Scope {
                 MouseArea {
                     anchors.fill: parent
                     cursorShape: Qt.PointingHandCursor
-                    onClicked: rootScope.calendarOpen = !rootScope.calendarOpen
+                    onClicked: {
+                        if (rootScope.sidebarOpen && rootScope.sidebarPage === 1)
+                            rootScope.sidebarOpen = false
+                        else {
+                            rootScope.sidebarPage = 1
+                            rootScope.sidebarOpen = true
+                        }
+                    }
                 }
             }
 
-            // Right: stats
+            // Right: vol / net / cpu-gpu-mem
             Row {
                 anchors.right: parent.right
                 anchors.verticalCenter: parent.verticalCenter
@@ -133,43 +158,77 @@ Scope {
         }
     }
 
-    // Calendar overlay — one per screen
+    // ── Sidebar overlay (one per screen) ────────────────────────────────────
     Variants {
         model: Quickshell.screens
 
         PanelWindow {
-            id: calendarOverlay
             required property var modelData
             screen: modelData
-            readonly property real uiScale: modelData.width / 1920
 
-            WlrLayershell.namespace: "qs-calendar"
-            visible: rootScope.calendarOpen
+            WlrLayershell.namespace: "qs-sidebar"
+            visible: rootScope.sidebarOpen
             exclusionMode: ExclusionMode.Ignore
 
-            anchors {
-                top: true
-                left: true
-                right: true
-                bottom: true
-            }
+            anchors { top: true; left: true; right: true; bottom: true }
             color: "transparent"
 
-            // Click outside calendar to close
+            // Click anywhere on the dim area to close
             MouseArea {
                 anchors.fill: parent
-                onClicked: rootScope.calendarOpen = false
+                onClicked: rootScope.sidebarOpen = false
             }
 
-            CalendarWidget {
-                anchors.horizontalCenter: parent.horizontalCenter
-                anchors.top: parent.top
-                anchors.topMargin: 26 * calendarOverlay.uiScale
+            // Sidebar panel (left edge, 300px)
+            Item {
+                anchors { top: parent.top; left: parent.left; bottom: parent.bottom }
+                width: 300
 
-                // Swallow clicks so they don't reach the close MouseArea
-                MouseArea {
+                // Swallow background clicks so they don't reach the close handler
+                MouseArea { anchors.fill: parent; onClicked: {} }
+
+                Sidebar {
                     anchors.fill: parent
-                    onClicked: {} // consume
+                    clockNow:     clockTimer.now
+                    cpuPct:       sysMonitor.cpu
+                    gpuPct:       sysMonitor.gpu
+                    memPct:       sysMonitor.mem
+                    currentPage:  rootScope.sidebarPage
+                    onCurrentPageChanged: rootScope.sidebarPage = currentPage
+                }
+            }
+        }
+    }
+
+    // ── Left-edge hover activator (hidden while sidebar is open) ────────────
+    Variants {
+        model: Quickshell.screens
+
+        PanelWindow {
+            required property var modelData
+            screen: modelData
+
+            WlrLayershell.namespace: "qs-edge-l"
+            exclusionMode: ExclusionMode.Ignore
+            visible: !rootScope.sidebarOpen
+
+            anchors { top: true; left: true; bottom: true }
+            implicitWidth: 2
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                hoverEnabled: true
+                onEntered: edgeTimer.restart()
+                onExited: edgeTimer.stop()
+
+                Timer {
+                    id: edgeTimer
+                    interval: 350
+                    onTriggered: {
+                        rootScope.sidebarPage = 0
+                        rootScope.sidebarOpen = true
+                    }
                 }
             }
         }
