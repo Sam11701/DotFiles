@@ -3,10 +3,15 @@ import QtQuick.Layouts
 import Quickshell
 import Quickshell.Io
 import Quickshell.Hyprland
+import Quickshell.Wayland
 import Quickshell.Services.SystemTray
 import Quickshell.Services.Pipewire
 
 Scope {
+    id: rootScope
+
+    property bool calendarOpen: false
+
     PwObjectTracker {
         objects: [Pipewire.defaultAudioSink]
     }
@@ -28,6 +33,7 @@ Scope {
         command: ["hyprpwcenter"]
     }
 
+    // Bar — one per screen
     Variants {
         model: Quickshell.screens
 
@@ -36,10 +42,6 @@ Scope {
             required property var modelData
             screen: modelData
             readonly property var hyprMonitor: Hyprland.monitorFor(modelData)
-            // Same physical bar size across monitors of differing resolution
-            // (e.g. the 1920x1080 and 2560x1440 outputs here are both 27in
-            // panels, so 2560-wide needs everything ~1.33x bigger in pixels
-            // to look the same size as on the 1920-wide one).
             readonly property real uiScale: modelData.width / 1920
 
             anchors {
@@ -47,153 +49,127 @@ Scope {
                 left: true
                 right: true
             }
-            implicitHeight: 30 * uiScale
-            color: "transparent"
+            implicitHeight: 22 * uiScale
+            color: Colors.background
 
+            // Left: workspaces
             Row {
                 anchors.left: parent.left
                 anchors.verticalCenter: parent.verticalCenter
-                anchors.leftMargin: 8 * panel.uiScale
-                spacing: 6 * panel.uiScale
+                anchors.leftMargin: 10 * panel.uiScale
+                spacing: 10 * panel.uiScale
 
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
-
-                    Repeater {
-                        model: Hyprland.workspaces
-
-                        Text {
-                            required property var modelData
-                            visible: modelData.monitor === panel.hyprMonitor
-                            text: modelData.id
-                            color: modelData.active ? Colors.primary : Colors.surfaceForeground
-                            font.pixelSize: 11 * panel.uiScale
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: modelData.activate()
-                            }
-                        }
-                    }
-                }
-
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
+                Repeater {
+                    model: Hyprland.workspaces
 
                     Text {
-                        width: Math.min(implicitWidth, 280 * panel.uiScale)
-                        elide: Text.ElideRight
-                        color: Colors.foreground
+                        required property var modelData
+                        visible: modelData.monitor === panel.hyprMonitor
+                        text: modelData.id
+                        color: modelData.active ? Colors.foreground : Colors.surfaceForeground
                         font.pixelSize: 11 * panel.uiScale
-                        text: Hyprland.activeToplevel ? Hyprland.activeToplevel.title : "Desktop"
-                    }
-                }
-            }
-
-            Pill {
-                anchors.centerIn: parent
-                uiScale: panel.uiScale
-
-                Text {
-                    color: Colors.foreground
-                    font.pixelSize: 11 * panel.uiScale
-                    text: Qt.formatDateTime(clockTimer.now, "ddd dd MMM  hh:mm")
-                }
-            }
-
-            Row {
-                anchors.right: parent.right
-                anchors.verticalCenter: parent.verticalCenter
-                anchors.rightMargin: 8 * panel.uiScale
-                spacing: 6 * panel.uiScale
-
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
-                    visible: SystemTray.items.values.length > 0
-
-                    Repeater {
-                        model: SystemTray.items
-
-                        Image {
-                            required property var modelData
-                            source: modelData.icon
-                            sourceSize: Qt.size(13 * panel.uiScale, 13 * panel.uiScale)
-                            width: 13 * panel.uiScale
-                            height: 13 * panel.uiScale
-
-                            MouseArea {
-                                anchors.fill: parent
-                                onClicked: modelData.activate()
-                            }
-                        }
-                    }
-                }
-
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
-
-                    Text {
-                        color: Colors.primary
-                        font.pixelSize: 11 * panel.uiScale
-                        text: {
-                            const sink = Pipewire.defaultAudioSink
-                            if (!sink || !sink.audio) return "No Audio"
-                            return sink.audio.muted ? "Muted" : "Vol " + Math.round(sink.audio.volume * 100) + "%"
-                        }
+                        font.family: "Overpass Mono"
+                        anchors.verticalCenter: parent ? parent.verticalCenter : undefined
 
                         MouseArea {
                             anchors.fill: parent
-                            onClicked: pwcenterProc.startDetached()
+                            onClicked: modelData.activate()
                         }
                     }
                 }
+            }
 
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
+            // Center: date (clickable to open calendar)
+            Text {
+                anchors.centerIn: parent
+                color: Colors.surfaceForeground
+                font.pixelSize: 11 * panel.uiScale
+                font.family: "Overpass Mono"
+                text: Qt.formatDateTime(clockTimer.now, "dddd, dd MMMM  hh:mm AP")
 
-                    Text {
-                        color: netMonitor.text === "Disconnected" ? "#ff5555" : Colors.secondary
-                        font.pixelSize: 11 * panel.uiScale
-                        text: netMonitor.text
+                MouseArea {
+                    anchors.fill: parent
+                    cursorShape: Qt.PointingHandCursor
+                    onClicked: rootScope.calendarOpen = !rootScope.calendarOpen
+                }
+            }
+
+            // Right: stats
+            Row {
+                anchors.right: parent.right
+                anchors.verticalCenter: parent.verticalCenter
+                anchors.rightMargin: 10 * panel.uiScale
+                spacing: 12 * panel.uiScale
+
+                Text {
+                    color: Colors.surfaceForeground
+                    font.pixelSize: 11 * panel.uiScale
+                    font.family: "Overpass Mono"
+                    text: {
+                        const sink = Pipewire.defaultAudioSink
+                        if (!sink || !sink.audio) return "Vol --"
+                        return sink.audio.muted ? "Muted" : "Vol " + Math.round(sink.audio.volume * 100) + "%"
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        onClicked: pwcenterProc.startDetached()
                     }
                 }
 
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
-
-                    Text {
-                        color: Colors.foreground
-                        font.pixelSize: 11 * panel.uiScale
-                        text: "CPU " + sysMonitor.cpu + "%"
-                    }
+                Text {
+                    color: netMonitor.text === "Disconnected" ? Colors.primary : Colors.surfaceForeground
+                    font.pixelSize: 11 * panel.uiScale
+                    font.family: "Overpass Mono"
+                    text: netMonitor.text
                 }
 
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
-
-                    Text {
-                        color: Colors.foreground
-                        font.pixelSize: 11 * panel.uiScale
-                        text: "GPU " + sysMonitor.gpu + "%"
-                    }
+                Text {
+                    color: Colors.surfaceForeground
+                    font.pixelSize: 11 * panel.uiScale
+                    font.family: "Overpass Mono"
+                    text: "CPU " + sysMonitor.cpu + "%  GPU " + sysMonitor.gpu + "%  Mem " + sysMonitor.mem + "%"
                 }
+            }
+        }
+    }
 
-                Pill {
-                    anchors.verticalCenter: parent.verticalCenter
-                    uiScale: panel.uiScale
+    // Calendar overlay — one per screen
+    Variants {
+        model: Quickshell.screens
 
-                    Text {
-                        color: Colors.foreground
-                        font.pixelSize: 11 * panel.uiScale
-                        text: "Mem " + sysMonitor.mem + "%"
-                    }
+        PanelWindow {
+            id: calendarOverlay
+            required property var modelData
+            screen: modelData
+            readonly property real uiScale: modelData.width / 1920
+
+            WlrLayershell.namespace: "qs-calendar"
+            visible: rootScope.calendarOpen
+            exclusionMode: ExclusionMode.Ignore
+
+            anchors {
+                top: true
+                left: true
+                right: true
+                bottom: true
+            }
+            color: "transparent"
+
+            // Click outside calendar to close
+            MouseArea {
+                anchors.fill: parent
+                onClicked: rootScope.calendarOpen = false
+            }
+
+            CalendarWidget {
+                anchors.horizontalCenter: parent.horizontalCenter
+                anchors.top: parent.top
+                anchors.topMargin: 26 * calendarOverlay.uiScale
+
+                // Swallow clicks so they don't reach the close MouseArea
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: {} // consume
                 }
             }
         }
