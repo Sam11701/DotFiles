@@ -90,6 +90,7 @@ local colors = require("colors")
 hl.on("hyprland.start", function ()
   hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE; dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE; systemctl --user start hypridle.service hyprpolkitagent.service cliphist.service quickshell.service cursor-clip.service")
   hl.exec_cmd("awww-daemon & sleep 0.5 && waypaper --restore")
+  hl.exec_cmd("hyprctl plugin load " .. os.getenv("HOME") .. "/.local/lib/liquidglass.so")
 end)
 
 
@@ -429,4 +430,30 @@ hl.window_rule({
 
     float = true,
     size  = "640 360",
+})
+
+hl.config({
+    plugin = {
+        liquidglass = {
+            enabled              = 1,
+            layer_namespaces     = "quickshell,qs-calendar",
+            window_opacity       = 0.90,
+            layer_opacity        = 1.0,
+            layer_corner_radius  = 12,
+            glass_opacity        = 0.78,
+            blur_strength        = 0.32,
+            blur_iterations      = 2,
+            refraction_strength  = 1.15,
+            chromatic_aberration = 0.90,
+            lens_distortion      = 1.15,
+            fresnel_strength     = 0.46,
+            specular_strength    = 0.38,
+            edge_thickness       = 0.040,
+            tint_color           = 0xb8d8ff00,
+            brightness           = 0.88,
+            contrast             = 1.16,
+            saturation           = 1.14,
+            vibrancy             = 0.32,
+        }
+    }
 })
