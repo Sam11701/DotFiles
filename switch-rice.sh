@@ -55,6 +55,13 @@ echo "Reloading running services..."
 hyprctl reload 2>/dev/null && echo "  hyprland reloaded" || echo "  hyprland not running"
 systemctl --user restart quickshell.service 2>/dev/null && echo "  quickshell restarted" || echo "  quickshell not running"
 pkill -SIGUSR1 kitty 2>/dev/null && echo "  kitty reloaded" || echo "  kitty not running"
+
+# Apply GTK settings via gsettings so xdg-desktop-portal-gtk serves them to GTK3/4 apps.
+# settings.ini is ignored when a portal is running; gsettings is the correct path.
+gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
+gsettings set org.gnome.desktop.interface font-name 'Overpass 10'
+echo "  gtk: prefer-dark applied"
+
 nemo --quit 2>/dev/null && echo "  nemo closed (reopen to apply GTK theme)" || true
 
 echo ""
