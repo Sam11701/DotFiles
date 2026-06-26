@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
-PROFILES=("Default")
+DOTFILES_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+PROFILES=("Default" "Direwolf")
 
 usage() {
     echo "Usage: switch-rice <profile>"
@@ -50,5 +50,11 @@ done
 
 echo "$PROFILE" > "$DOTFILES_DIR/.active-rice"
 echo ""
+echo "Reloading running services..."
+
+hyprctl reload 2>/dev/null && echo "  hyprland reloaded" || echo "  hyprland not running"
+systemctl --user restart quickshell.service 2>/dev/null && echo "  quickshell restarted" || echo "  quickshell not running"
+kill -SIGUSR1 "$(pidof kitty)" 2>/dev/null && echo "  kitty reloaded" || echo "  kitty not running"
+
+echo ""
 echo "Done. Active rice: $PROFILE"
-echo "Log out and start a Hyprland session to apply."

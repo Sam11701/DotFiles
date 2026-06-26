@@ -1,0 +1,101 @@
+configuration {
+    modi: "drun,run,window";
+    show-icons: true;
+    display-drun: "Apps";
+    display-run: "Run";
+    display-window: "Window";
+    drun-display-format: "{name}";
+    font: "JetBrainsMono Nerd Font 11";
+}
+
+@import "colors.rasi"
+
+window {
+    background-color: @background;
+    border: 2px;
+    border-color: @primary;
+    border-radius: 12px;
+    width: 600px;
+    location: center;
+    padding: 12px;
+}
+
+mainbox {
+    children: [inputbar, listview];
+    spacing: 10px;
+    background-color: transparent;
+}
+
+inputbar {
+    background-color: @surface;
+    text-color: @foreground;
+    border-radius: 8px;
+    padding: 10px 12px;
+    children: [prompt, entry];
+}
+
+prompt {
+    text-color: @primary;
+    padding: 0px 8px 0px 0px;
+}
+
+entry {
+    placeholder: "Search...";
+    placeholder-color: @foreground-alt;
+    background-color: transparent;
+    text-color: @foreground;
+}
+
+listview {
+    background-color: transparent;
+    columns: 1;
+    lines: 8;
+    spacing: 4px;
+    scrollbar: false;
+}
+
+element {
+    background-color: transparent;
+    text-color: @foreground;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+element alternate.normal {
+    background-color: #ffffff0d;
+    text-color: @foreground;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+element alternate.active {
+    background-color: #ffffff0d;
+    text-color: @foreground;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+element selected.normal {
+    background-color: @primary;
+    text-color: @background;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+element selected.active {
+    background-color: @primary;
+    text-color: @background;
+    border-radius: 8px;
+    padding: 8px 10px;
+}
+
+element-icon {
+    size: 22px;
+    padding: 0px 10px 0px 0px;
+}
+
+element-text {
+    vertical-align: 0.5;
+    text-color: inherit;
+    background-color: transparent;
+}
