@@ -1,0 +1,49 @@
+* {
+    font-family: "JetBrainsMono Nerd Font", sans-serif;
+    font-size: 14px;
+    min-height: 0;
+}
+
+window#waybar {
+    background-color: ^r@DM^d9;
+    color: ^r@LM^;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    color: ^r@M^;
+}
+
+#workspaces button.active {
+    color: ^r@V^;
+}
+
+#workspaces button:hover {
+    color: ^r@LV^;
+}
+
+#clock,
+#tray,
+#pulseaudio,
+#network,
+#cpu,
+#memory {
+    padding: 0 10px;
+}
+
+#pulseaudio {
+    color: ^r@V^;
+}
+
+#network {
+    color: ^r@LV^;
+}
+
+#network.disconnected {
+    color: ^r@V>ro(150)^;
+}
+
+#cpu,
+#memory {
+    color: ^r@LM^;
+}
