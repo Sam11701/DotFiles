@@ -91,6 +91,7 @@ hl.on("hyprland.start", function ()
   hl.exec_cmd("systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE; dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP HYPRLAND_INSTANCE_SIGNATURE; systemctl --user start hypridle.service hyprpolkitagent.service cliphist.service quickshell.service cursor-clip.service")
   hl.exec_cmd("awww-daemon & sleep 0.5 && waypaper --restore")
   hl.exec_cmd("hyprctl plugin load " .. os.getenv("HOME") .. "/.local/lib/liquidglass.so")
+  hl.exec_cmd("python3 " .. os.getenv("HOME") .. "/.config/quickshell/apply-shortcut-overrides.py")
 end)
 
 
@@ -371,6 +372,7 @@ hl.bind("Print",                   hl.dsp.exec_cmd("hyprshot -m output -o " .. o
 hl.bind("SHIFT + Print",           hl.dsp.exec_cmd("hyprshot -m region -o " .. os.getenv("HOME") .. "/Pictures"))
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("hyprpicker -a -n"))
 hl.bind(mainMod .. " + SHIFT + V", hl.dsp.exec_cmd("kitty --class cava -e cava"))
+hl.bind(mainMod .. " + I",         hl.dsp.exec_cmd("qs -p ~/.config/quickshell/settings.qml"))
 
 
 --------------------------------
@@ -436,7 +438,7 @@ hl.config({
     plugin = {
         liquidglass = {
             enabled              = 1,
-            exclude_classes      = "brave-browser",
+            exclude_classes      = "!nemo,kitty",
             layer_namespaces     = "quickshell,qs-calendar",
             window_opacity       = 0.90,
             layer_opacity        = 1.0,
