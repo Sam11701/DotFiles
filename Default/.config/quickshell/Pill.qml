@@ -10,7 +10,7 @@ Rectangle {
     color: pillMode ? Colors.surface : "transparent"
     implicitHeight: 21 * uiScale
     implicitWidth: row.implicitWidth + 18 * uiScale
-    antialiasing: false
+    antialiasing: true
 
     RowLayout {
         id: row
