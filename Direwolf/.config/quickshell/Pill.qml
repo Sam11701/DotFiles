@@ -10,6 +10,7 @@ Rectangle {
     opacity: 0.82
     implicitHeight: 21 * uiScale
     implicitWidth: row.implicitWidth + 18 * uiScale
+    antialiasing: true
 
     RowLayout {
         id: row
